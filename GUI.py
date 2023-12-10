@@ -3,6 +3,9 @@ from tkinter import filedialog
 import networkx as nx
 import matplotlib.pyplot as plt
 from sympy import symbols, to_cnf
+from Methods.deep import deepWalk
+from Methods.node import node2Vec
+from Methods.doc import doc2Vec
 
 def read_file(file_path):
     with open(file_path, 'r') as file:
@@ -13,6 +16,18 @@ def process_data(method, input_file, output_file):
     # Wczytaj plik CNF
     cnf_formula_str = ''.join(read_file(input_file))
 
+    # Switch dla różnych możliwych wyborów
+    if method == "Deep Walk":
+        G,model,time = deepWalk(input_file)
+        
+    elif method == "Node2Vec":
+        G,model,time = node2Vec(input_file)
+
+    elif method == "Doc2Vec":
+        G,model,time = doc2Vec(input_file)
+
+    else:
+        print("Nieznana metoda")
 
 
     # Wypisz wyniki przetwarzania
@@ -51,10 +66,10 @@ root.title("Wizualizacja formuł logicznych")
 
 # Wybór metody
 method_var = tk.StringVar()
-method_var.set("Metoda 1")
+method_var.set("Deep Walk")
 
 method_label = tk.Label(root, text="Wybierz metodę:")
-method_menu = tk.OptionMenu(root, method_var, "Metoda 1", "Metoda 2", "Metoda 3")
+method_menu = tk.OptionMenu(root, method_var, "Deep Walk", "Node2Vec", "Doc2Vec")
 
 # Wybór pliku
 file_label = tk.Label(root, text="Wybierz plik CNF do przetworzenia:")
