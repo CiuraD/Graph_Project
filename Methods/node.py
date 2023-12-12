@@ -57,11 +57,11 @@ def node2Vec(filePath):
     elapsed_time = time.time() - start_time  # Calculate elapsed time
 
     
-
+    results = ""
     
     for node in graph.nodes:
         node_representation = model.wv.get_vector(str(node))
-        results = f"Node {node} representation:", node_representation
+        results += f"Node {node} representation:", node_representation
 
     #node_representation = model.wv.get_vector('1')
 
