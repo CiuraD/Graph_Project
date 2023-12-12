@@ -59,12 +59,12 @@ def node2Vec(filePath):
     
 
     
-    #for node in graph.nodes:
-    #    node_representation = model.wv.get_vector(str(node))
-    #    print(f"Node {node} representation:", node_representation)
+    for node in graph.nodes:
+        node_representation = model.wv.get_vector(str(node))
+        results = f"Node {node} representation:", node_representation
 
     #node_representation = model.wv.get_vector('1')
 
     #print(f"Graph creation and Node2Vec took {elapsed_time:.2f} seconds.")
-    return graph,model,elapsed_time
+    return graph,results,elapsed_time
 

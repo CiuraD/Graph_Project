@@ -23,6 +23,9 @@ def process_data(method, input_file, output_file):
     elif method == "Node2Vec":
         G,model,time = node2Vec(input_file)
 
+
+        
+
     elif method == "Doc2Vec":
         G,model,time = doc2Vec(input_file)
 

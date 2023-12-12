@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import time
 
 pathsToFiles = [
-    r"C:\Users\Admin\Desktop\aim-100-1_6-no-1.cnf",
-    r"C:\Users\Admin\Desktop\aim-50-1_6-yes1-4.cnf",
-    r"C:\Users\Admin\Desktop\bf0432-007.cnf"
+    r"C:\Users\Admin\Desktop\Graph_Project\Files\aim-100-1_6-no-1.cnf",
+    r"C:\Users\Admin\Desktop\Graph_Project\Files\aim-50-1_6-yes1-4.cnf",
+    r"C:\Users\Admin\Desktop\Graph_Project\Files\bf0432-007.cnf"
 ]
 
 chosenFile = 0

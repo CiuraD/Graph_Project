@@ -83,4 +83,10 @@ def deepWalk(filePath):
     elapsed_time = time.time() - start_time  # Calculate elapsed time
     #print(f"Graph creation and Node2Vec took {elapsed_time:.2f} seconds.")
 
-    return graph,model,elapsed_time
+    for node in graph.nodes:
+        node_representation = model.wv.get_vector(str(node))
+        results = f"Node {node} representation:", node_representation
+
+
+
+    return graph,results,elapsed_time

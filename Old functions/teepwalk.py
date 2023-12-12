@@ -4,9 +4,9 @@ from gensim.models import Word2Vec
 import time
 
 pathsToFiles = [
-    r"C:\Users\Admin\Desktop\aim-100-1_6-no-1.cnf",
-    r"C:\Users\Admin\Desktop\aim-50-1_6-yes1-4.cnf",
-    r"C:\Users\Admin\Desktop\bf0432-007.cnf"
+    r"C:\Users\Admin\Desktop\Graph_Project\Files\aim-100-1_6-no-1.cnf",
+    r"C:\Users\Admin\Desktop\Graph_Project\Files\aim-50-1_6-yes1-4.cnf",
+    r"C:\Users\Admin\Desktop\Graph_Project\Files\bf0432-007.cnf"
 ]
 
 chosenFile = 1
@@ -87,5 +87,9 @@ for node, (x, y) in pos.items():
     plt.text(x, y, f"{node}\n{model.wv[str(node)]}", fontsize=6, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
 
 plt.show()
+
+for node in graph.nodes:
+        node_representation = model.wv.get_vector(str(node))
+        print(f"Node {node} representation:", node_representation)
 elapsed_time = time.time() - start_time  # Calculate elapsed time
 print(f"Graph creation and Node2Vec took {elapsed_time:.2f} seconds.")

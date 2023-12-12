@@ -80,4 +80,4 @@ def doc2Vec(filePath):
     elapsed_time = end_time - start_time
     #print("Execution time: {:.2f} seconds".format(execution_time))
 
-    return G,model,elapsed_time
+    return G,graph_embedding,elapsed_time
