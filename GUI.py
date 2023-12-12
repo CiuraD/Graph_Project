@@ -18,16 +18,24 @@ def process_data(method, input_file, output_file):
 
     # Switch dla różnych możliwych wyborów
     if method == "Deep Walk":
-        G,model,time = deepWalk(input_file)
+        G,model,time,a = deepWalk(input_file)
+
+        print(model)
+        
+
         
     elif method == "Node2Vec":
         G,model,time = node2Vec(input_file)
 
+        print(model)
 
         
 
     elif method == "Doc2Vec":
         G,model,time = doc2Vec(input_file)
+
+        print(model)
+
 
     else:
         print("Nieznana metoda")
@@ -36,7 +44,8 @@ def process_data(method, input_file, output_file):
     # Wypisz wyniki przetwarzania
     with open(output_file, 'w') as outfile:
         outfile.write("Wyniki przetwarzania formuły CNF:\n")
-        outfile.write(f"Formuła wejściowa: {cnf_formula_str}\n")
+        #outfile.write(f"Formuła wejściowa: {cnf_formula_str}\n")
+        outfile.write(model)
      
 
     # Opcjonalnie zapisz graf

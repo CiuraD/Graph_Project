@@ -84,11 +84,14 @@ def deepWalk(filePath):
     #print(f"Graph creation and Node2Vec took {elapsed_time:.2f} seconds.")
 
     results = ""
+    a = 0
 
     for node in graph.nodes:
         node_representation = model.wv.get_vector(str(node))
-        results += f"Node {node} representation:", node_representation
+        results += f"Node {node} representation: {str(node_representation)}\n"
+        a+=1
 
 
 
-    return graph,results,elapsed_time
+
+    return graph,results,elapsed_time,a
