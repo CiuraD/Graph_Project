@@ -1,5 +1,9 @@
+import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+from gensim.models import Word2Vec
+from sklearn.manifold import TSNE
+import time
 import os
 import sys
 
@@ -58,7 +62,6 @@ def read_cnf_file(file_path):
 
     return clauses
 
-
 def create_graph_from_cnf(clauses):
     G = nx.Graph()
 
@@ -72,6 +75,47 @@ def create_graph_from_cnf(clauses):
                 G.add_edge(abs(clause[i]), abs(clause[j]))
 
     return G
+
+# Parametry DeepWalk
+walk_length = 10  # Długość pojedynczej wędrówki
+num_walks = 5  # Liczba wędrówek zaczynających się od każdego węzła
+vector_size = 16  # Rozmiar wektora osadzenia
+window_size = 3  # Rozmiar okna w modelu Word2Vec
+
+def generate_walks(graph, num_walks, walk_length):
+    walks = []
+    for _ in range(num_walks):
+        for node in graph.nodes():
+            walk = [node]
+            for _ in range(walk_length - 1):
+                neighbors = list(graph.neighbors(walk[-1]))
+                if neighbors:
+                    walk.append(neighbors[0])  # Wybieramy losowego sÄsiada
+                else:
+                    break
+            walks.append([str(node) for node in walk])
+    return walks
+
+def visualize_deepwalk_results(graph, embedding):
+    tsne = TSNE(n_components=2, random_state=42)
+    embedding_tsne = tsne.fit_transform(embedding)
+
+    # Get the nodes with deep walk embeddings
+    deepwalk_nodes = set(graph.nodes())
+    
+    # Rysowanie grafu bez niebieskich węzłów
+    plt.figure(figsize=(12, 10))
+    for node in graph.nodes():
+        if node not in deepwalk_nodes:
+            nx.draw_networkx_nodes(graph, pos=nx.spring_layout(graph), nodelist=[node], node_size=700, node_color='lightgray')
+
+    # Dodanie punktów reprezentujących węzły z DeepWalk
+    plt.scatter(embedding_tsne[:, 0], embedding_tsne[:, 1], marker='o', s=50, color='red', label='t-SNE')
+
+    # Dodanie legendy
+    plt.legend()
+
+    plt.show()
 
 
 def main():
@@ -89,51 +133,44 @@ def main():
     max_degree = max(node_degrees.values())
     normalized_degrees = {node: 1 - ((node_degrees[node] - min_degree) / (max_degree - min_degree)) for node in graph.nodes()}
 
-    # Create a color map based on normalized node degrees
-    color_map = {node: plt.cm.RdYlGn(normalized_degrees[node]) for node in graph.nodes()}
+   
+    # Generowanie wędrówek
+    walks = generate_walks(graph, num_walks, walk_length)
 
+    # Utworzenie modelu Word2Vec na podstawie wÄdrÃ³wek
+    model = Word2Vec(walks, vector_size=vector_size, window=window_size, sg=1, workers=4)
+
+    # Pobranie wynikÃ³w DeepWalk (embedding)
+    embedding = np.array([model.wv[str(node)] for node in graph.nodes()])
+
+    # Wizualizacja wynikÃ³w DeepWalk przy uÅ¼yciu t-SNE
+    visualize_deepwalk_results(graph, embedding)
     # Rysowanie grafu
-    pos = nx.spring_layout(graph)  # Układ wiosennego grafu
-    nx.draw(graph, pos, with_labels=False, font_weight='bold', node_color=list(color_map.values()), node_size=700, font_size=8)
-
-    # Dodanie numerów wierzchołków
-    node_labels = {node: str(node) for node in graph.nodes()}
-    nx.draw_networkx_labels(graph, pos, labels=node_labels, font_size=8, font_color='black')
-
-   # Wypisz numery 3 wierzchołków o największej liczbie połączeń
-    print("Top 3 wierzchołki o największej liczbie połączeń:")
-    for node in sorted_nodes[:3]:
-        print(f"{node} - {node_degrees[node]}")
-
-    # Wypisz numery 3 wierzchołków o najmniejszej liczbie połączeń
-    print("\nTop 3 wierzchołki o najmniejszej liczbie połączeń:")
-    for node in sorted_nodes[-3:]:
-        print(f"{node} - {node_degrees[node]}")
+    
 
     
 
-    # Dodanie legendy
-    norm = plt.Normalize(0, 1)
-    sm = plt.cm.ScalarMappable(cmap=plt.cm.RdYlGn, norm=norm)
-    sm.set_array([])
+    
 
-    # Dodanie kolorowej mapy (colorbar) z dwiema wartościami
-    cbar = plt.colorbar(sm, ticks=[0, 1], label='Normalized Node Degree', ax=plt.gca(), orientation='horizontal', pad=0.1)  # Ustawienie pad na 0.1, aby dostosować długość
-
-    # Zmiana etykiet na max i min
-    cbar.set_ticklabels([max_degree, min_degree])
-
-    # Wyśrodkowanie legendy
-    cbar.ax.set_position([0.05, 0.01, 0.89, 0.1])  # Ustawienie pozycji
-
+   
+    
     plt.show()
 
+    for node in graph.nodes:
+        node_representation = model.wv.get_vector(str(node))
+        print(f"Node {node} representation:", node_representation)
     
+    elapsed_time = time.time() - start_time  # Calculate elapsed time
+    print(f"Graph creation and Node2Vec took {elapsed_time:.2f} seconds.")
+
 if __name__ == "__main__":
     
+    start_time = time.time()  # Start measuring time
+    print("SSSSSSSSSSSSSS")
     #for chosenFile in range (22):
     #   for i in range(10):
     chosenFile = 1
+
     aktualna_sciezka = aktualna_sciezka + '\\' + pathsToFiles[chosenFile]
     #print(aktualna_sciezka)
     main()
