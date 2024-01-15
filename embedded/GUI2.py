@@ -35,10 +35,18 @@ def process_data(input_file, output_file):
     # Opcjonalnie zapisz graf
     if save_graph.get() and G is not None:
         # Tutaj użyj t-SNE do osadzenia wierzchołków grafu w przestrzeni 2D
- 
-        
+    
         # Tutaj dodaj kod do wizualizacji grafu na podstawie osadzenia
         plt.title("t-SNE Visualization of Graph")
+
+        # Pobierz katalog bieżący skryptu
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+    
+        # Określ ścieżkę, gdzie chcesz zapisać plik PNG
+        save_path = os.path.join(script_directory, "graph_visualization.png")
+    
+        # Save the plot as a PNG file
+        plt.savefig(save_path)
         plt.show()
 
 def open_documentation():
