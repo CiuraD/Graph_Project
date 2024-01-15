@@ -102,18 +102,30 @@ def visualize_deepwalk_results(graph, embedding):
 
     # Get the nodes with deep walk embeddings
     deepwalk_nodes = set(graph.nodes())
-    
+
     # Rysowanie grafu bez niebieskich węzłów
     plt.figure(figsize=(12, 10))
+    pos = nx.spring_layout(graph)
+    
+    # Rysowanie węzłów bez etykiet
+    nx.draw_networkx_nodes(graph, pos=pos, nodelist=[node for node in graph.nodes() if node not in deepwalk_nodes], node_size=700, node_color='lightgray')
+
+    # Dodanie etykiet do węzłów
+    labels = {}
     for node in graph.nodes():
-        if node not in deepwalk_nodes:
-            nx.draw_networkx_nodes(graph, pos=nx.spring_layout(graph), nodelist=[node], node_size=700, node_color='lightgray')
+        if node in deepwalk_nodes:
+            labels[node] = str(node)
 
     # Dodanie punktów reprezentujących węzły z DeepWalk
-    plt.scatter(embedding_tsne[:, 0], embedding_tsne[:, 1], marker='o', s=50, color='red', label='t-SNE')
+    scatter = plt.scatter(embedding_tsne[:, 0], embedding_tsne[:, 1], marker='o', s=100, color='red', edgecolors='darkred', linewidths=1.5, label='t-SNE')
 
     # Dodanie legendy
     plt.legend()
+
+    # Dodanie etykiet do każdego punktu w środku z obramowaniem
+    for i, label in enumerate(labels):
+        x, y = embedding_tsne[i, 0], embedding_tsne[i, 1]
+        plt.text(x, y, label, ha='center', va='center', fontsize=8, bbox=dict(facecolor='red', edgecolor='darkred', boxstyle='circle,pad=0.3'))
 
     plt.show()
 
