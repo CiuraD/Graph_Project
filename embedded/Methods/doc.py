@@ -49,7 +49,10 @@ def draw_cnf_graph(cnf_data):
     # Rysuj graf
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=True)
-    plt.show()
+    #plt.show()
+
+    return G
+    
 
 # Trenuj model Doc2Vec
 def train_doc2vec_model(tagged_data):
@@ -58,20 +61,25 @@ def train_doc2vec_model(tagged_data):
     model.train(tagged_data, total_examples=model.corpus_count, epochs=model.epochs)
     return model
 
-# Przykładowe użycie z dodanym stoperem
-start_time = time.time()
+def doc2Vec(filePath):
+    # Przykładowe użycie z dodanym stoperem
+    start_time = time.time()
 
-cnf_data = load_cnf(pathsToFiles[chosenFile])
-tagged_data = prepare_data(cnf_data)
-model = train_doc2vec_model(tagged_data)
+    cnf_data = load_cnf(filePath)
+    tagged_data = prepare_data(cnf_data)
+    model = train_doc2vec_model(tagged_data)
 
-# Uzyskaj osadzenia dla grafu CNF
-graph_embedding = model.dv['CNF']
-print("Embedding for CNF:", graph_embedding)
+    # Uzyskaj osadzenia dla grafu CNF
+    graph_embedding = model.dv['CNF']
+    print("Embedding for CNF:", graph_embedding)
 
-# Rysuj graf CNF
-#draw_cnf_graph(cnf_data)
+    embedding_str = str(graph_embedding)
 
-end_time = time.time()
-execution_time = end_time - start_time
-print("Execution time: {:.2f} seconds".format(execution_time))
+    # Rysuj graf CNF
+    G = draw_cnf_graph(cnf_data)
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    #print("Execution time: {:.2f} seconds".format(execution_time))
+
+    return G,embedding_str,elapsed_time

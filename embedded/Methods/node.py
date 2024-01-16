@@ -43,10 +43,10 @@ def plot_graph(graph):
     nx.draw(graph, pos, with_labels=True, font_weight='bold')
     plt.show()
 
-def main():
+def node2Vec(filePath):
     start_time = time.time()  # Record the start time
 
-    clauses = read_cnf_file(pathsToFiles[chosenFile])
+    clauses = read_cnf_file(filePath)
     graph = create_graph_from_cnf(clauses)
     #plot_graph(graph)
     
@@ -54,18 +54,16 @@ def main():
     node2vec = Node2Vec(graph, dimensions=64, walk_length=30, num_walks=200, workers=4)
     model = node2vec.fit(window=10, min_count=1, batch_words=4)
 
-    #elapsed_time = time.time() - start_time  # Calculate elapsed time
+    elapsed_time = time.time() - start_time  # Calculate elapsed time
 
     
-
+    results = ""
     
     for node in graph.nodes:
         node_representation = model.wv.get_vector(str(node))
-        print(f"Node {node} representation:", node_representation)
+        results += f"Node {node} representation: {str(node_representation)}\n"
 
     #node_representation = model.wv.get_vector('1')
 
     #print(f"Graph creation and Node2Vec took {elapsed_time:.2f} seconds.")
-
-if __name__ == "__main__":
-    main()
+    return graph,results,elapsed_time
